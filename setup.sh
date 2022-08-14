@@ -27,13 +27,12 @@ fi
 # Installing wakatime
 if [ ! -f "${HOME}/.wakatime.cfg" ]
 then
-	echo "Installing wakatime..."
-	python3 -c "$(wget -q -O - https://raw.githubusercontent.com/wakatime/vim-wakatime/master/scripts/install_cli.py)" &> /dev/null
-
-	echo -n "Enter your wakatime key: "
+	echo -n "Enter your wakatime key (leave if you dont have it): "
 	read wakatimeKey
 	if [ -z "$wakatimeKey" ]
 	then
+		echo "Installing wakatime..."
+		python3 -c "$(wget -q -O - https://raw.githubusercontent.com/wakatime/vim-wakatime/master/scripts/install_cli.py)" &> /dev/null
 		echo "$wakatimeKey" > "${HOME}/.wakatime.cfg"
 	fi
 fi
