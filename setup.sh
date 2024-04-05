@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Check if running as root
-if [ "$EUID" -ne 0 ]; then
-	echo -e "\033[0;31mPlease run this script as root\033[0m"
+if [ ! "$EUID" -ne 0 ]; then
+	echo -e "\033[0;31mPlease run this script as regular user\033[0m"
 	{
 		return 1 &> /dev/null
 	} || {
@@ -73,14 +73,13 @@ if [ ! -f "/root/clear_iptables.sh" ]; then
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		echo "Clearing iptables and adding reboot task to crontab..."
-		source clear_iptables.sh
-
-		cp clear_iptables.sh /root
-		chmod +x /root/clear_iptables.sh
+		sudo cp clear_iptables.sh /root
+		sudo chmod +x /root/clear_iptables.sh
+		sudo /root/clear_iptables.sh
 		(
-			crontab -l 2>/dev/null
+			sudo crontab -l 2>/dev/null
 			echo "@reboot /root/clear_iptables.sh"
-		) | crontab -
+		) | sudo crontab -
 	fi
 fi
 
