@@ -13,10 +13,15 @@ source "${HOME}/.zgen/zgen.zsh"
 zgen load romkatv/powerlevel10k powerlevel10k
 zgen load zsh-users/zsh-autosuggestions
 zgen load zsh-users/zsh-syntax-highlighting
-zgen load sobolevn/wakatime-zsh-plugin
 zgen oh-my-zsh
 zgen oh-my-zsh plugins/git
 zgen oh-my-zsh plugins/sudo
+
+# Loading zgen wakatime plugin
+if [ -e "${HOME}/.wakatime.cfg" ] 
+then
+	zgen load sobolevn/wakatime-zsh-plugin
+fi
 
 # Aliases
 alias ls=exa
