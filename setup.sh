@@ -67,14 +67,24 @@ if [ ! -f "$NVM_DIR/nvm.sh" ]; then
 	nvm use default &>/dev/null
 fi
 
+# Ask about swap file
+if [ ! -f "/swapfile" ]; then
+	read -p "Do you want to create a swap file? (y/n) " -n 1 -r
+	echo
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		chmod +x make_swap.sh
+		sudo ./make_swap.sh
+	fi
+fi
+
 # Ask if run clear_iptables.sh
 if [ ! -f "/root/clear_iptables.sh" ]; then
 	read -p "Do you want to run clear_iptables.sh and add it to crontab? (y/n) " -n 1 -r
 	echo
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		echo "Clearing iptables and adding reboot task to crontab..."
+		chmod +x clear_iptables.sh
 		sudo cp clear_iptables.sh /root
-		sudo chmod +x /root/clear_iptables.sh
 		sudo /root/clear_iptables.sh
 		(
 			sudo crontab -l 2>/dev/null
