@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ "$EUID" -ne 0 ]; then
+	echo -e "\033[0;31mPlease run this script as root\033[0m"
+	{
+		return 1 &> /dev/null
+	} || {
+		exit 1
+	}
+fi
+
+efibootmgr | grep "EFISTUB Arch" | grep -oP "Boot\K([0-9]{4})" | xargs -I{} efibootmgr -b {} -B

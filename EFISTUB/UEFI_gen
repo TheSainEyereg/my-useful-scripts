@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+
+partitions="root=UUID=4fcc552a-8b3a-4157-915d-b16542a15237 resume=UUID=a89aa26c-6359-45a1-99b1-496061abc146"
+kernel_params="loglevel=3 quiet video=DP-1:2560x1440@165 video=HDMI-A-1:1920x1080@75"
+
+if [ "$EUID" -ne 0 ]; then
+	echo -e "\033[0;31mPlease run this script as root\033[0m"
+	{
+		return 1 &> /dev/null
+	} || {
+		exit 1
+	}
+fi
+
+if [ -f "./UEFI_del" ]; then
+	echo "Running ./UEFI_del to delete UEFI entries..."
+	./UEFI_del
+fi
+
+echo "Generating UEFI entries..."
+efibootmgr -c -d /dev/nvme1n1 -p 1 -L "EFISTUB Arch" -l /vmlinuz-linux -u  "$partitions rw $kernel_params initrd=/amd-ucode.img initrd=/initramfs-linux.img" 
+# efibootmgr -c -d /dev/nvme1n1 -p 1 -L "EFISTUB Arch Fallback" -l /vmlinuz-linux -u "$partitions rw $kernel_params initrd=/amd-ucode.img initrd=/initramfs-linux-fallback.img"
+exit 0
